@@ -1,0 +1,35 @@
+import time
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from sqlalchemy import create_engine
+import pandas as pd
+
+ticker = input("Enter Ticker Symbol: ")
+
+while not ticker:
+    ticker = input("Enter Ticker Symbol: ")
+
+url = 'https://www.macrotrends.net/stocks/charts/TSLA/tesla/income-statement?freq=Q'
+browser = webdriver.Chrome()
+browser.get(url)
+
+search = browser.find_element(By.ID,"jqxInput")
+search.send_keys(str(ticker))
+search.send_keys(Keys.RETURN)
+
+try:
+    text = WebDriverWait(browser, 20).until(
+        EC.presence_of_element_located((By.ID, "contenttablejqxgrid"))
+    )
+
+except:
+    browser.quit()
+    
+element = browser.find_element(By.XPATH, "//*[contains(@class, 'jqx-reset') and contains(@class, 'jqx-icon-arrow-right')]")
+for i in range(40):
+    element.click()    
+ 
+# locate HTML element on page by ID
+current_price = browser.find_element(By.ID, 'contentjqxgrid')
